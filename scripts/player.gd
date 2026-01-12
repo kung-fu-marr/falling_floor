@@ -34,6 +34,7 @@ func switch_state(to_state: STATE):
 			velocity = Vector2.ZERO
 			global_position = target_tile_pos
 			tile = target_tile
+			TileUtils.step_on_tile(tile)
 			
 		STATE.MOVE:
 			pass
@@ -102,8 +103,3 @@ func check_if_pit() -> bool:
 		switch_state(STATE.FALL)
 		return true
 	return false
-
-
-
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	print('hey')

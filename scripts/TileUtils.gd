@@ -19,3 +19,10 @@ func query_relative_tile(tile_coords: Vector2) -> TileData:
 func get_tile_global_pos(tile_coords: Vector2) -> Vector2:
 	var local_pos := tiles.map_to_local(tile_coords)
 	return tiles.to_global(local_pos)
+
+func step_on_tile(tile_coords: Vector2) -> void:
+	if tile_coords not in tiles.get_used_cells():
+		return
+	var data = tiles.get_cell_tile_data(tile_coords)
+	if data.get_custom_data("activation_time") > 0.0:
+		tiles.activate_tile(tile_coords)
