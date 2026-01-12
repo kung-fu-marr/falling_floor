@@ -3,7 +3,7 @@ extends Node
 var tiles: TileMapLayer
 var player: Node2D
 
-func set_player_to_tile(tile_coords: Vector2, start_tile: bool = false) -> void:
+func set_player_to_tile(tile_coords: Vector2i, start_tile: bool = false) -> void:
 	var local_pos = tiles.map_to_local(tile_coords)
 	var target_pos = tiles.to_global(local_pos)
 	player.global_position = target_pos
@@ -13,16 +13,19 @@ func set_player_to_tile(tile_coords: Vector2, start_tile: bool = false) -> void:
 	if start_tile:
 		player.starting_tile = tile_coords
 
-func query_relative_tile(tile_coords: Vector2) -> TileData:
+func query_relative_tile(tile_coords: Vector2i) -> TileData:
 	return tiles.get_cell_tile_data(tile_coords)
 
-func get_tile_global_pos(tile_coords: Vector2) -> Vector2:
+func get_tile_global_pos(tile_coords: Vector2i) -> Vector2:
 	var local_pos := tiles.map_to_local(tile_coords)
 	return tiles.to_global(local_pos)
 
-func step_on_tile(tile_coords: Vector2) -> void:
+func step_on_tile(tile_coords: Vector2i) -> void:
 	if tile_coords not in tiles.get_used_cells():
 		return
 	var data = tiles.get_cell_tile_data(tile_coords)
 	if data.get_custom_data("activation_time") > 0.0:
+		if tile_coords in tiles.activated_tiles:
+			print('duplicate prevented')
+			return
 		tiles.activate_tile(tile_coords)

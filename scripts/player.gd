@@ -12,14 +12,14 @@ const SLOW_SPEED := NORMAL_SPEED * 0.6
 @onready var anim_player: AnimationPlayer = $AnimatedSprite2D/AnimationPlayer
 
 var current_state: STATE = STATE.STAND
-var starting_tile: Vector2 = Vector2.ZERO
-var tile: Vector2 = Vector2.ZERO
-var target_tile: Vector2 = Vector2.ZERO
+var starting_tile: Vector2i = Vector2i.ZERO
+var tile: Vector2i = Vector2i.ZERO
+var target_tile: Vector2i = Vector2i.ZERO
 var target_tile_pos: Vector2 = Vector2.ZERO
 var is_carrying_key: bool = false
 
-func _ready() -> void:
-	switch_state(STATE.STAND)
+#func _ready() -> void:
+	#switch_state(STATE.STAND)
 	
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
@@ -57,23 +57,28 @@ func process_state(delta) -> void:
 		STATE.FALL:
 			if not anim_player.is_playing():
 				TileUtils.set_player_to_tile(starting_tile)
-				anim_player.play("RESET")
-				switch_state(STATE.STAND)
+				get_tree().reload_current_scene()
+				#anim_player.play("RESET")
+				#switch_state(STATE.STAND)
 			
 func handle_movement(_delta) -> void:
-	var dir := Vector2(
-		signf(Input.get_axis("ui_left", "ui_right")),
-		signf(Input.get_axis("ui_up", "ui_down"))
+	var dir := Vector2i(
+		signi(Input.get_axis("ui_left", "ui_right")),
+		signi(Input.get_axis("ui_up", "ui_down"))
 	)
-	if dir == Vector2.ZERO:
+	if dir == Vector2i.ZERO:
 		return
 		
 	var valid: bool = check_valid_tile(dir) 
 	if not valid:
 		return
 		
-	var mov := Vector2.ZERO
+	var mov := Vector2i.ZERO
 	if dir.x:
+		if dir.x > 0:
+			anim_sprite.flip_h = false
+		else:
+			anim_sprite.flip_h = true
 		mov.x = dir.x
 	elif dir.y:
 		mov.y = dir.y
@@ -87,12 +92,12 @@ func handle_movement(_delta) -> void:
 	move_and_slide()
 	switch_state(STATE.MOVE)
 
-func check_valid_tile(dir: Vector2) -> bool:
+func check_valid_tile(dir: Vector2i) -> bool:
 	var data: TileData
 	if dir.x:
-		data = TileUtils.query_relative_tile(Vector2(tile.x + dir.x, tile.y))
+		data = TileUtils.query_relative_tile(Vector2i(tile.x + dir.x, tile.y))
 	else:
-		data = TileUtils.query_relative_tile(Vector2(tile.x, tile.y + dir.y))
+		data = TileUtils.query_relative_tile(Vector2i(tile.x, tile.y + dir.y))
 	var is_wall: bool = data.get_custom_data("wall")
 	return !is_wall
 

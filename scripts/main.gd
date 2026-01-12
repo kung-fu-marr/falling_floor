@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var start_tile: Vector2 = Vector2(0,0)
+@export var start_tile: Vector2i = Vector2i(1,1)
 @onready var player: CharacterBody2D = $Player
 @onready var tiles: TileMapLayer = $TileMapLayer
 
