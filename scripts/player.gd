@@ -12,6 +12,7 @@ const SLOW_SPEED := NORMAL_SPEED * 0.6
 @onready var anim_player: AnimationPlayer = $AnimatedSprite2D/AnimationPlayer
 
 var current_state: STATE = STATE.STAND
+var starting_tile: Vector2 = Vector2.ZERO
 var tile: Vector2 = Vector2.ZERO
 var target_tile: Vector2 = Vector2.ZERO
 var target_tile_pos: Vector2 = Vector2.ZERO
@@ -52,6 +53,12 @@ func process_state(delta) -> void:
 			if global_position.distance_to(target_tile_pos) <= target_snap:
 				switch_state(STATE.STAND)
 
+		STATE.FALL:
+			if not anim_player.is_playing():
+				TileUtils.set_player_to_tile(starting_tile)
+				anim_player.play("RESET")
+				switch_state(STATE.STAND)
+			
 func handle_movement(_delta) -> void:
 	var dir := Vector2(
 		signf(Input.get_axis("ui_left", "ui_right")),
@@ -95,3 +102,8 @@ func check_if_pit() -> bool:
 		switch_state(STATE.FALL)
 		return true
 	return false
+
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	print('hey')
