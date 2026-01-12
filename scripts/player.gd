@@ -8,17 +8,39 @@ const SLOW_SPEED := NORMAL_SPEED * 0.6
 
 @export var target_snap: float = 1.0
 
+@onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var anim_player: AnimationPlayer = $AnimatedSprite2D/AnimationPlayer
+
 var current_state: STATE = STATE.STAND
 var tile: Vector2 = Vector2.ZERO
 var target_tile: Vector2 = Vector2.ZERO
 var target_tile_pos: Vector2 = Vector2.ZERO
 var is_carrying_key: bool = false
 
+func _ready() -> void:
+	switch_state(STATE.STAND)
+	
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		is_carrying_key = !is_carrying_key
 	process_state(delta)
 
+func switch_state(to_state: STATE):
+	current_state = to_state
+	match current_state:
+		STATE.STAND:
+			anim_sprite.play("default")
+			velocity = Vector2.ZERO
+			global_position = target_tile_pos
+			tile = target_tile
+			
+		STATE.MOVE:
+			pass
+		
+		STATE.FALL:
+			anim_sprite.play("fall")
+			anim_player.play("fall")
+			
 func process_state(delta) -> void:
 	match current_state:
 		STATE.STAND:
@@ -29,17 +51,6 @@ func process_state(delta) -> void:
 			move_and_slide()
 			if global_position.distance_to(target_tile_pos) <= target_snap:
 				switch_state(STATE.STAND)
-
-func switch_state(to_state: STATE):
-	current_state = to_state
-	match current_state:
-		STATE.STAND:
-			velocity = Vector2.ZERO
-			global_position = target_tile_pos
-			tile = target_tile
-			
-		STATE.MOVE:
-			pass
 
 func handle_movement(_delta) -> void:
 	var dir := Vector2(
