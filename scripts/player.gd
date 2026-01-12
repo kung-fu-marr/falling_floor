@@ -22,7 +22,8 @@ func _physics_process(delta: float) -> void:
 func process_state(delta) -> void:
 	match current_state:
 		STATE.STAND:
-			handle_movement(delta)
+			if not check_if_pit():
+				handle_movement(delta)
 
 		STATE.MOVE:
 			move_and_slide()
@@ -75,3 +76,11 @@ func check_valid_tile(dir: Vector2) -> bool:
 		data = TileUtils.query_relative_tile(Vector2(tile.x, tile.y + dir.y))
 	var is_wall: bool = data.get_custom_data("wall")
 	return !is_wall
+
+func check_if_pit() -> bool:
+	var data: TileData = TileUtils.query_relative_tile(tile)
+	var is_pit: bool = data.get_custom_data("pit")
+	if is_pit:
+		switch_state(STATE.FALL)
+		return true
+	return false
