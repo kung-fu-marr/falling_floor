@@ -1,6 +1,7 @@
 extends Node
 
 signal key_obtained(coords)
+signal exit_reached(coords)
 
 var tile_manager: Node2D
 var floor_tiles: TileMapLayer
@@ -32,7 +33,9 @@ func check_item_tiles(tile_coords) -> void:
 	if tile_coords not in item_tiles.get_used_cells():
 		return
 	var item_data = item_tiles.get_cell_tile_data(tile_coords)
-	if item_data.get_custom_data("key"):
+	if item_data.get_custom_data("exit"):
+		exit_reached.emit(tile_coords)
+	elif item_data.get_custom_data("key"):
 		key_obtained.emit(tile_coords)
 
 func check_floor_tiles(tile_coords) -> void:

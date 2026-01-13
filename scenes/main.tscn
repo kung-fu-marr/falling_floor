@@ -1,12 +1,20 @@
-[gd_scene load_steps=5 format=4 uid="uid://b6qe4usd7rhu8"]
+[gd_scene load_steps=8 format=4 uid="uid://b6qe4usd7rhu8"]
 
 [ext_resource type="Script" uid="uid://xsedydrpp2wn" path="res://scripts/main.gd" id="1_0wfyh"]
 [ext_resource type="TileSet" uid="uid://b8xf28cgah1k0" path="res://assets/tilesets/dungeon_tileset.tres" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://ct2spu85mnqfa" path="res://scripts/tile_manager.gd" id="3_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://cgty3br5iw5cy" path="res://scenes/player.tscn" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://m55ppcafr0of" path="res://scripts/level_clear_menu.gd" id="5_tbgi4"]
 
-[node name="Main" type="Node2D"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyhfs"]
+bg_color = Color(0.45203662, 0.0017652435, 0.6877788, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tbgi4"]
+font_size = 51
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("menu")]
 script = ExtResource("1_0wfyh")
+menu = NodePath("LevelClearMenu")
 
 [node name="TileManager" type="Node2D" parent="." node_paths=PackedStringArray("floor_tiles", "item_tiles")]
 script = ExtResource("3_jyhfs")
@@ -26,3 +34,43 @@ tile_set = ExtResource("2_jyhfs")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(94, 55)
 zoom = Vector2(5.66, 5.66)
+
+[node name="LevelClearMenu" type="CanvasLayer" parent="."]
+visible = false
+script = ExtResource("5_tbgi4")
+
+[node name="Panel" type="Panel" parent="LevelClearMenu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel2" type="Panel" parent="LevelClearMenu"]
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -178.0
+offset_right = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jyhfs")
+
+[node name="Label" type="Label" parent="LevelClearMenu"]
+offset_left = 438.0
+offset_top = 55.0
+offset_right = 721.0
+offset_bottom = 155.0
+text = "Level Clear!"
+label_settings = SubResource("LabelSettings_tbgi4")
+
+[node name="Button" type="Button" parent="LevelClearMenu"]
+offset_left = 477.0
+offset_top = 263.0
+offset_right = 680.0
+offset_bottom = 324.0
+theme_override_font_sizes/font_size = 26
+text = "Play Again"
+
+[connection signal="pressed" from="LevelClearMenu/Button" to="LevelClearMenu" method="_on_button_pressed"]
