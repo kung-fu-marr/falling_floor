@@ -4,7 +4,7 @@ enum STATE {STAND, MOVE, FALL}
 enum FACING {UP, DOWN, LEFT, RIGHT}
 
 const NORMAL_SPEED := 70.0
-const SLOW_SPEED := NORMAL_SPEED * 0.6
+const SLOW_SPEED := NORMAL_SPEED * 0.3
 
 @export var target_snap: float = 1.0
 
