@@ -1,10 +1,92 @@
-[gd_scene load_steps=8 format=4 uid="uid://b6qe4usd7rhu8"]
+[gd_scene load_steps=21 format=4 uid="uid://b6qe4usd7rhu8"]
 
 [ext_resource type="Script" uid="uid://xsedydrpp2wn" path="res://scripts/main.gd" id="1_0wfyh"]
 [ext_resource type="TileSet" uid="uid://b8xf28cgah1k0" path="res://assets/tilesets/dungeon_tileset.tres" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://ct2spu85mnqfa" path="res://scripts/tile_manager.gd" id="3_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://cgty3br5iw5cy" path="res://scenes/player.tscn" id="3_sugp2"]
 [ext_resource type="Script" uid="uid://m55ppcafr0of" path="res://scripts/level_clear_menu.gd" id="5_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://yf0yfsl0a1aa" path="res://assets/Enemy_Animations_Set/enemies-skeleton1_movement.png" id="5_tefeu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o6xl0"]
+size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tipki"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_85g3d"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_choun"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ya4ey"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eb6dy"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trceg"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8y0u"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkv2x"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbj1t"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_muem4"]
+atlas = ExtResource("5_tefeu")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dp3eg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tipki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_85g3d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_choun")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ya4ey")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eb6dy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trceg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a8y0u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkv2x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbj1t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_muem4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyhfs"]
 bg_color = Color(0.45203662, 0.0017652435, 0.6877788, 1)
@@ -30,6 +112,20 @@ tile_map_data = PackedByteArray("AAAKAAMAAAAJAAkAAAAFAAMAAAAIAAMAAAA=")
 tile_set = ExtResource("2_jyhfs")
 
 [node name="Player" parent="." instance=ExtResource("3_sugp2")]
+
+[node name="Enemy" type="CharacterBody2D" parent="."]
+position = Vector2(94, 31)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
+shape = SubResource("RectangleShape2D_o6xl0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Enemy"]
+position = Vector2(2, -5)
+sprite_frames = SubResource("SpriteFrames_dp3eg")
+autoplay = "default"
+frame_progress = 0.49912623
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(94, 55)
