@@ -18,9 +18,9 @@ var target_tile: Vector2i = Vector2i.ZERO
 var target_tile_pos: Vector2 = Vector2.ZERO
 var is_carrying_key: bool = false
 
-#func _ready() -> void:
-	#switch_state(STATE.STAND)
-	
+func _ready() -> void:
+	TileUtils.key_obtained.connect(_on_key_obtained)
+
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		is_carrying_key = !is_carrying_key
@@ -108,3 +108,6 @@ func check_if_pit() -> bool:
 		switch_state(STATE.FALL)
 		return true
 	return false
+
+func _on_key_obtained(_coords) -> void:
+	is_carrying_key = true
