@@ -8,15 +8,15 @@ var floor_tiles: TileMapLayer
 var item_tiles: TileMapLayer
 var player: Node2D
 
-func set_player_to_tile(tile_coords: Vector2i, start_tile: bool = false) -> void:
+func set_character_to_tile(char: Node2D, tile_coords: Vector2i, start_tile: bool = false) -> void:
 	var local_pos = floor_tiles.map_to_local(tile_coords)
 	var target_pos = floor_tiles.to_global(local_pos)
-	player.global_position = target_pos
-	player.target_tile_pos = target_pos
-	player.tile = tile_coords
-	player.target_tile = tile_coords
+	char.global_position = target_pos
+	char.target_tile_pos = target_pos
+	char.tile = tile_coords
+	char.target_tile = tile_coords
 	if start_tile:
-		player.starting_tile = tile_coords
+		char.starting_tile = tile_coords
 
 func query_relative_tile(tile_coords: Vector2i) -> TileData:
 	return floor_tiles.get_cell_tile_data(tile_coords)

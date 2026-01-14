@@ -1,12 +1,14 @@
 extends CharacterBody2D
 
+
 enum STATE {STAND, MOVE, FALL}
-enum FACING {UP, DOWN, LEFT, RIGHT}
 
-const NORMAL_SPEED := 70.0
-const SLOW_SPEED := NORMAL_SPEED * 0.3
+const SPEED := 20.0
 
-@export var target_snap: float = 1.0
+@export var start_tile: Vector2i
+@export var tile_path: Array[Vector2i]
+var target_index: int = 0
+@export var target_snap: float = 0.2
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var anim_player: AnimationPlayer = $AnimatedSprite2D/AnimationPlayer
@@ -16,10 +18,10 @@ var starting_tile: Vector2i = Vector2i.ZERO
 var tile: Vector2i = Vector2i.ZERO
 var target_tile: Vector2i = Vector2i.ZERO
 var target_tile_pos: Vector2 = Vector2.ZERO
-var is_carrying_key: bool = false
+var reverse_path: bool = false
 
 func _ready() -> void:
-	TileUtils.key_obtained.connect(_on_key_obtained)
+	TileUtils.set_character_to_tile(self, start_tile)
 
 func _physics_process(delta: float) -> void:
 	process_state(delta)
@@ -32,7 +34,16 @@ func switch_state(to_state: STATE):
 			velocity = Vector2.ZERO
 			global_position = target_tile_pos
 			tile = target_tile
-			TileUtils.step_on_tile(tile)
+			if tile == tile_path[target_index]:
+				if reverse_path == true:
+					target_index -= 1
+					if target_index <= 0:
+						reverse_path = false
+						target_index = 0
+				else:
+					target_index += 1
+				if target_index >= tile_path.size():
+					target_index = 0
 			
 		STATE.MOVE:
 			pass
@@ -49,28 +60,31 @@ func process_state(delta) -> void:
 
 		STATE.MOVE:
 			move_and_slide()
-			if global_position.distance_to(target_tile_pos) <= target_snap:
+			if global_position.distance_to(target_tile_pos) <= target_snap:				
 				switch_state(STATE.STAND)
 
 		STATE.FALL:
 			if not anim_player.is_playing():
 				TileUtils.set_character_to_tile(self, starting_tile)
-				get_tree().reload_current_scene()
-				#anim_player.play("RESET")
-				#switch_state(STATE.STAND)
+				queue_free()
 			
 func handle_movement(_delta) -> void:
-	var dir := Vector2i(
-		signi(Input.get_axis("ui_left", "ui_right")),
-		signi(Input.get_axis("ui_up", "ui_down"))
-	)
+	var dir := (tile_path[target_index] - tile)
+	dir /= dir.length()
+	
 	if dir == Vector2i.ZERO:
 		return
 		
-	var valid: bool = check_valid_tile(dir) 
-	if not valid:
-		return
-		
+	if !check_valid_tile(dir):
+		reverse_path = true
+		target_index -= 1
+		if target_index <= 0:
+			target_index = 0
+			reverse_path = false
+		dir = (tile_path[target_index] - tile)
+		if dir != Vector2i.ZERO:
+			dir /= dir.length()
+	
 	var mov := Vector2i.ZERO
 	if dir.x:
 		if dir.x > 0:
@@ -83,7 +97,8 @@ func handle_movement(_delta) -> void:
 
 	target_tile = tile + mov
 	target_tile_pos = TileUtils.get_tile_global_pos(target_tile)
-	velocity = mov * NORMAL_SPEED
+	
+	velocity = mov * SPEED
 	move_and_slide()
 	switch_state(STATE.MOVE)
 
@@ -103,9 +118,3 @@ func check_if_pit() -> bool:
 		switch_state(STATE.FALL)
 		return true
 	return false
-
-func _on_key_obtained(_coords) -> void:
-	is_carrying_key = true
-
-func _on_hurtbox_area_entered(area: Area2D) -> void:
-	get_tree().reload_current_scene()
