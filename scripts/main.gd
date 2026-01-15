@@ -1,6 +1,7 @@
 extends Node2D
 
 @export var start_tile: Vector2i = Vector2i(1,1)
+@export var doors: Dictionary[String, Array] = {}
 @export var menu: CanvasLayer 
 @onready var player: CharacterBody2D = $Player
 
