@@ -2,6 +2,9 @@ extends Node2D
 
 @export var floor_tiles: TileMapLayer
 @export var item_tiles: TileMapLayer
+@export var doors: Dictionary[String, Array] = {}
+const LOCK_TEXTURE = preload("uid://bnicm3vdtinbu")
+const KeyDisplay = preload("uid://c54cukopot31c")
 
 var activated_floor_tiles: Array[Vector2i] = []
 var activation_times: Dictionary = {}
@@ -12,6 +15,8 @@ func _ready() -> void:
 	TileUtils.tile_manager = self
 	TileUtils.floor_tiles = floor_tiles
 	TileUtils.item_tiles = item_tiles
+	
+	lock_doors()
 	
 func _process(delta: float) -> void:
 	for i in activated_floor_tiles.size():
@@ -52,6 +57,33 @@ func clean_up_activated_floor_tiles() -> void:
 		if activation_times[key] == -1:
 			activation_times.erase(key)
 			
+func lock_doors() -> void:
+	for door in doors.keys():
+		var keys_arr := doors[door]
+		var box := HBoxContainer.new()
+		box.set_script(KeyDisplay)
+		box.alignment = BoxContainer.ALIGNMENT_CENTER
+		for key in keys_arr:
+			var temp_lock := TextureRect.new()
+			temp_lock.texture = LOCK_TEXTURE
+			box.add_child(temp_lock)
+		$Locks.add_child(box)
+		var coords = string_to_vector2(door)
+		box.global_position = TileUtils.get_tile_global_pos(coords, "items")
+
+func string_to_vector2(string := "") -> Vector2i:
+	if string:
+		var new_string: String = string
+		new_string = new_string.erase(0, 1)
+		print(new_string)
+		new_string = new_string.erase(new_string.length() - 1, 1)
+		print(new_string)
+		var array: Array = new_string.split(", ")
+		print(array)
+		return Vector2(int(array[0]), int(array[1]))
+
+	return Vector2.ZERO
+
 func _on_key_obtained(coords) -> void:
 	item_tiles.set_cell(coords)
 	for tile in item_tiles.get_used_cells():

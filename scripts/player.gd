@@ -82,7 +82,7 @@ func handle_movement(_delta) -> void:
 		mov.y = dir.y
 
 	target_tile = tile + mov
-	target_tile_pos = TileUtils.get_tile_global_pos(target_tile)
+	target_tile_pos = TileUtils.get_tile_global_pos(target_tile, "floor")
 	velocity = mov * NORMAL_SPEED
 	move_and_slide()
 	switch_state(STATE.MOVE)
@@ -107,5 +107,5 @@ func check_if_pit() -> bool:
 func _on_key_obtained(_coords) -> void:
 	is_carrying_key = true
 
-func _on_hurtbox_area_entered(area: Area2D) -> void:
+func _on_hurtbox_area_entered(_area: Area2D) -> void:
 	get_tree().reload_current_scene()

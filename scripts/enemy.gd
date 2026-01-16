@@ -96,7 +96,7 @@ func handle_movement(_delta) -> void:
 		mov.y = dir.y
 
 	target_tile = tile + mov
-	target_tile_pos = TileUtils.get_tile_global_pos(target_tile)
+	target_tile_pos = TileUtils.get_tile_global_pos(target_tile, "floor")
 	
 	velocity = mov * SPEED
 	move_and_slide()

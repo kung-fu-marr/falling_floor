@@ -21,8 +21,14 @@ func set_character_to_tile(character: Node2D, tile_coords: Vector2i, start_tile:
 func query_relative_tile(tile_coords: Vector2i) -> TileData:
 	return floor_tiles.get_cell_tile_data(tile_coords)
 
-func get_tile_global_pos(tile_coords: Vector2i) -> Vector2:
-	var local_pos := floor_tiles.map_to_local(tile_coords)
+func get_tile_global_pos(tile_coords: Vector2i, layer: String) -> Vector2:
+	var tiles : TileMapLayer
+	match layer:
+		"floor":
+			tiles = floor_tiles
+		"items":
+			tiles = item_tiles
+	var local_pos := tiles.map_to_local(tile_coords)
 	return floor_tiles.to_global(local_pos)
 
 func step_on_tile(tile_coords: Vector2i) -> void:
